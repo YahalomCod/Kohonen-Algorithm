@@ -25,8 +25,31 @@ class Kohonen:
                     weights.append(random.uniform(0, 1))
                 self.neurons[layer].append(weights)
         self.neurons = np.array(self.neurons)
-        print(self.neurons)
+        # print(self.neurons)
 
+        for i in range(iteration):
+            vec = self.data[int(random.uniform(0, len(self.data)))]
+            nn = self.nearest_neuron(vec)
+            # nearest_n = self.neurons[nn[0]][nn[1]]
+            curr_learning_rate = self.learning_rate * np.exp(-i / self.lamda)
+            curr_radius = self.radius * np.exp(-i / self.lamda)
+
+            for j in range(len(self.neurons)):
+                for n in range(len(self.neurons[j])):
+                    curr_neuron = self.neurons[j][n]
+                    d = np.linalg.norm(np.array(nn) - np.array([j, n]))
+                    neighbourhood = np.exp(- (d ** 2) / (2 * (curr_radius ** 2)))
+                    self.neurons[j][n] += curr_learning_rate * neighbourhood * (
+                                vec - curr_neuron)  # dist(curr_neuron, vec)
+            if (i % 1000 == 0) or i == iteration - 1:
+                if len(self.neurons_amount) == 1:
+                    self.plot1D(i)
+                else:
+                    self.plot2D(i)
+
+    def refit(self, data, iteration=1000):
+        self.data = np.array(data)
+        self.lamda = iteration / np.log(self.radius)
         for i in range(iteration):
             vec = self.data[int(random.uniform(0, len(self.data)))]
             nn = self.nearest_neuron(vec)
@@ -96,7 +119,7 @@ class Kohonen:
             ax.plot(xs, ys, 'r-', markersize=0, linewidth=1)
             ax.plot(xh, yh, 'r-', markersize=0, linewidth=1)
         ax.plot(neurons_x, neurons_y, color='b', marker='o', linewidth=0, markersize=3)
-        ax.scatter(self.data[:, 0], self.data[:, 1], c="b", alpha=0.08)
+        ax.scatter(self.data[:, 0], self.data[:, 1], c="g", alpha=0.08, s=5)
         plt.title("Plot2D Iteration No. " + str(t))
         # plt.savefig("plot2D iteration " + str(t) + ".png")
         plt.show()
