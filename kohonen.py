@@ -74,7 +74,7 @@ class Kohonen:
         ax.plot(xs, ys, 'b-')
         ax.scatter(self.data[:, 0], self.data[:, 1], alpha=0.3)
         plt.title("Plot1D Iteration No. " + str(t))
-        plt.savefig("plot1D iteration " + str(t) + ".png")
+        # plt.savefig("plot1D iteration " + str(t) + ".png")
         plt.show()
 
     def plot2D(self, t):
